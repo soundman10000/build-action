@@ -14,4 +14,10 @@ public class TestingUselessStuff
         const string world = "world";
         world.TurnStringIntoHello().Should().Be("Hello");
     }
+
+    [Fact]
+    public void BadTest()
+    {
+        "a".Equals("b").Should().BeTrue();
+    }
 }
