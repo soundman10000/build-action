@@ -63,7 +63,7 @@ jobs:
     - name: Add GitHub Package Source
       if: github.ref == 'refs/heads/main'
       run: |
-        dotnet nuget add source --username OWNER --password ${{ secrets.NUGET_GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/OWNER/index.json"
+        dotnet nuget add source --username soundman10000 --password ${{ secrets.NUGET_GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/soundman10000/index.json"
 
     - name: Push to GitHub Packages
       if: github.ref == 'refs/heads/main'
