@@ -31,15 +31,15 @@ jobs:
     - name: Determine Version
       id: gitversion
       run: |
-        dotnet gitversion
-        echo "major=${{ steps.gitversion.outputs.major }}" >> $GITHUB_OUTPUT
-        echo "minor=${{ steps.gitversion.outputs.minor }}" >> $GITHUB_OUTPUT
-        echo "patch=${{ steps.gitversion.outputs.patch }}" >> $GITHUB_OUTPUT
-        echo "prereleasetag=${{ steps.gitversion.outputs.preReleaseTag }}" >> $GITHUB_OUTPUT
-        echo "prereleasetagwithdash=${{ steps.gitversion.outputs.preReleaseTagWithDash }}" >> $GITHUB_OUTPUT
-        echo "fullsemver=${{ steps.gitversion.outputs.fullSemVer }}" >> $GITHUB_OUTPUT
-        echo "informationalversion=${{ steps.gitversion.outputs.informationalVersion }}" >> $GITHUB_OUTPUT
-        echo "assemblysemver=${{ steps.gitversion.outputs.assemblySemVer }}" >> $GITHUB_OUTPUT
+        output=$(dotnet gitversion | tee /dev/tty)
+        echo "major=$(echo "$output" | grep -oP '(?<=Major: )\d+')" >> $GITHUB_OUTPUT
+        echo "minor=$(echo "$output" | grep -oP '(?<=Minor: )\d+')" >> $GITHUB_OUTPUT
+        echo "patch=$(echo "$output" | grep -oP '(?<=Patch: )\d+')" >> $GITHUB_OUTPUT
+        echo "prereleasetag=$(echo "$output" | grep -oP '(?<=PreReleaseTag: )\S+')" >> $GITHUB_OUTPUT
+        echo "prereleasetagwithdash=$(echo "$output" | grep -oP '(?<=PreReleaseTagWithDash: )\S+')" >> $GITHUB_OUTPUT
+        echo "fullsemver=$(echo "$output" | grep -oP '(?<=FullSemVer: )\S+')" >> $GITHUB_OUTPUT
+        echo "informationalversion=$(echo "$output" | grep -oP '(?<=InformationalVersion: )\S+')" >> $GITHUB_OUTPUT
+        echo "assemblysemver=$(echo "$output" | grep -oP '(?<=AssemblySemVer: )\S+')" >> $GITHUB_OUTPUT
 
     - name: Display GitVersion info
       run: |
