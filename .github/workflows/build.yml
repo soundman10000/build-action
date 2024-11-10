@@ -22,9 +22,9 @@ jobs:
       run: sudo apt-get install -y jq
     
     - name: Setup GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.15  # Make sure to use the latest version
+      uses: gittools/actions/gitversion/setup@v0.9.15
       with:
-        versionSpec: '5.x'  # or specify a specific version like '5.1.0'
+        versionSpec: '5.x'
 
     - name: Determine Version
       id: gitversion
@@ -37,9 +37,10 @@ jobs:
       id: parse_version
       shell: bash
       run: |
-        version_info=$(jq -r '.version.Major' <<< '${{ toJson(steps.gitversion.outputs) }}')
+        # Correct way to access the JSON output
+        version_info=$(echo '${{ steps.gitversion.outputs.version_info }}' | jq -r '.Major')
         echo "version_major=$version_info" >> $GITHUB_OUTPUT
 
     - name: Display GitVersion info
       run: |
-        echo "Value: ${{ steps.parse_version.outputs }}"
+        echo "Major Version: ${{ steps.parse_version.outputs.version_major }}"
