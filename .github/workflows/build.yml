@@ -27,28 +27,29 @@ jobs:
     - name: Test
       run: dotnet test useless-stuff-tests --no-restore --verbosity normal
 
-    - name: Install jq
-      run: sudo apt-get install -y jq
-    
-    - name: Setup and Determine Version
-      if: github.ref == 'refs/heads/main' 
+    - name: Install jq, Setup, Determine, and Parse Version
+      if: github.ref == 'refs/heads/main'
       id: gitversion
       run: |
-        # Setup GitVersion
-        dotnet tool install --global GitVersion.Tool --version 5.*
+        sudo apt-get update
+        sudo apt-get install -y jq || { echo "Failed to install jq"; exit 1; }
         
-        # Determine Version and Output
-        dotnet gitversion 2>&1 | tee gitversion_output.json
+        dotnet tool install --global GitVersion.Tool --version 5.* || { echo "Failed to install GitVersion"; exit 1; }
+        
+        output=$(dotnet gitversion 2>&1)
+        if [ $? -ne 0 ]; then
+          echo "Failed to determine version with GitVersion"
+          exit 1
+        fi
+        
+        version_info=$(echo "$output" | jq '.')
+        version=$(echo "$version_info" | jq -r '.MajorMinorPatch')
+        
         echo "version_info<<EOF" >> $GITHUB_OUTPUT
-        cat gitversion_output.json >> $GITHUB_OUTPUT
+        echo "$version_info" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
+        echo "version=$version" >> $GITHUB_OUTPUT
       shell: bash
-
-    - name: Parse Version Info
-      id: parse_version
-      shell: bash
-      run: |
-        echo "version=$(echo '${{ steps.gitversion.outputs.version_info }}' | jq -r '.MajorMinorPatch')" >> $GITHUB_OUTPUT
 
     - name: Create Tag
       run: |
