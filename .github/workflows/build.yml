@@ -14,18 +14,47 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/checkout@v3
       with:
-        dotnet-version: '8.0.x'
-
+        fetch-depth: 0
+    
     - name: Restore dependencies
       run: dotnet restore useless-stuff
 
     - name: Build
       run: dotnet build useless-stuff --configuration Release --no-restore
 
+    # If the tests fail this will just exit the process
     - name: Test
       run: dotnet test useless-stuff-tests --no-restore --verbosity normal
+
+    - name: Install jq
+      run: sudo apt-get install -y jq
+    
+    - name: Setup GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.15
+      with:
+        versionSpec: '5.x'
+
+    - name: Determine Version
+      id: gitversion
+      run: |
+        output=$(dotnet gitversion 2>&1)
+        echo "version_info<<EOF" >> $GITHUB_OUTPUT
+        echo "$output" | jq '.' >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: Parse Version Info
+      id: parse_version
+      shell: bash
+      run: |
+        echo "version=$(echo '${{ steps.gitversion.outputs.version_info }}' | jq -r '.MajorMinorPatch')" >> $GITHUB_OUTPUT
+
+    - name: Create Tag
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git tag -a "v${{ steps.parse_version.outputs.version }}" -m "Release version ${{ steps.parse_version.outputs.version }}"
+        git push origin "v${{ steps.parse_version.outputs.version }}"
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
