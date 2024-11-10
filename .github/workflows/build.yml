@@ -35,8 +35,9 @@ jobs:
     - name: Determine Version
       id: gitversion
       run: |
-        version_info=$(dotnet gitversion)
-        echo $version_info >> $GITHUB_OUTPUT
+        echo "version_info<<EOF" >> $GITHUB_OUTPUT
+        dotnet gitversion
+        echo "EOF" >> $GITHUB_OUTPUT
 
     - name: Display GitVersion info
       run: |
