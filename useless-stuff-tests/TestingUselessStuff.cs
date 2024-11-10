@@ -45,4 +45,3 @@ public class TestingUselessStuff
         "a".Equals("b").Should().BeFalse();
     }
 }
-}
