@@ -18,6 +18,6 @@ public class TestingUselessStuff
     [Fact]
     public void BadTest()
     {
-        "a".Equals("b").Should().BeTrue();
+        "a".Equals("b").Should().BeFalse();
     }
 }
