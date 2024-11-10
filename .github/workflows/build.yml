@@ -17,15 +17,9 @@ jobs:
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
-    
-    - name: Set Output
-      id: my_step
-      run: |
-        echo "my_output=some value" >> $GITHUB_OUTPUT
 
-    - name: Use Output
-      run: |
-        echo "The output was ${{ steps.my_step.outputs.my_output }}"
+    - name: Install jq
+      run: sudo apt-get install -y jq
     
     - name: Setup GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.15  # Make sure to use the latest version
@@ -38,6 +32,12 @@ jobs:
         echo "version_info<<EOF" >> $GITHUB_OUTPUT
         dotnet gitversion
         echo "EOF" >> $GITHUB_OUTPUT
+
+    - name: Parse Version Info
+      shell: bash
+      run: |
+        version_info=$(echo "${{ steps.gitversion.outputs.version_info }}" | jq '.')
+        echo "Major version: $(echo $version_info | jq '.Major')"
 
     - name: Display GitVersion info
       run: |
