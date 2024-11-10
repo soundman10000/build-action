@@ -30,7 +30,8 @@ jobs:
 
     - name: Determine Version
       id: gitversion
-      run: dotnet gitversion |
+      run: |
+        dotnet gitversion
         echo "major=${{ steps.gitversion.outputs.major }}" >> $GITHUB_OUTPUT
         echo "minor=${{ steps.gitversion.outputs.minor }}" >> $GITHUB_OUTPUT
         echo "patch=${{ steps.gitversion.outputs.patch }}" >> $GITHUB_OUTPUT
