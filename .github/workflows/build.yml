@@ -17,6 +17,16 @@ jobs:
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
+    
+    - name: Restore dependencies
+      run: dotnet restore useless-stuff
+
+    - name: Build
+      run: dotnet build useless-stuff --configuration Release --no-restore
+
+    # If the tests fail this will just exit the process
+    - name: Test
+      run: dotnet test useless-stuff-tests --no-restore --verbosity normal
 
     - name: Install jq
       run: sudo apt-get install -y jq
