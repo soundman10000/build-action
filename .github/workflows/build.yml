@@ -47,9 +47,4 @@ jobs:
         git tag -a "v${{ steps.parse_version.outputs.version }}" -m "Release version ${{ steps.parse_version.outputs.version }}"
         git push origin "v${{ steps.parse_version.outputs.version }}"
       env:
-        # If you're using GitHub Actions, you might need to set up authentication here
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by GitHub Actions automatically
-
-    - name: Display GitVersion info
-      run: |
-        echo "Major Version: ${{ steps.parse_version.outputs.version }} can you believe it"
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
