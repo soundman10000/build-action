@@ -38,7 +38,7 @@ jobs:
       shell: bash
       run: |
         # Access the version_info from the previous step's output
-        version_info="${{ steps.gitversion.outputs }}"
+        version_info="${{ toJson(steps.gitversion.outputs) }}"
         echo "Does this work?"
         echo "$version_info"
 
