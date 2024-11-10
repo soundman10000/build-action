@@ -39,7 +39,7 @@ jobs:
       shell: bash
       run: |
         # Access the version_info from the previous step's output
-        version_info=$(echo '${{ steps.gitversion.outputs.version_info }}' | jq -r '.Major')
+        version_info=$(echo '${{ steps.gitversion.outputs.version_info }}' | jq -r '.MajorMinorPatch')
         echo "Does this work?"
         echo "$version_info"
 
