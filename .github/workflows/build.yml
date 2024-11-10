@@ -31,32 +31,14 @@ jobs:
     - name: Determine Version
       id: gitversion
       run: |
-        output=$(dotnet gitversion)
-        echo "major=$(echo "$output" | grep -oP '(?<=Major: )\d+')" >> $GITHUB_OUTPUT
-        echo "minor=$(echo "$output" | grep -oP '(?<=Minor: )\d+')" >> $GITHUB_OUTPUT
-        echo "patch=$(echo "$output" | grep -oP '(?<=Patch: )\d+')" >> $GITHUB_OUTPUT
-        echo "prereleasetag=$(echo "$output" | grep -oP '(?<=PreReleaseTag: )\S+')" >> $GITHUB_OUTPUT
-        echo "prereleasetagwithdash=$(echo "$output" | grep -oP '(?<=PreReleaseTagWithDash: )\S+')" >> $GITHUB_OUTPUT
-        echo "fullsemver=$(echo "$output" | grep -oP '(?<=FullSemVer: )\S+')" >> $GITHUB_OUTPUT
-        echo "informationalversion=$(echo "$output" | grep -oP '(?<=InformationalVersion: )\S+')" >> $GITHUB_OUTPUT
-        echo "assemblysemver=$(echo "$output" | grep -oP '(?<=AssemblySemVer: )\S+')" >> $GITHUB_OUTPUT
-    
+        version_info=$(dotnet gitversion)
+        echo "$version_info" > version_info.txt
+        echo "major=$(echo "$version_info" | grep -oP '(?<=Major: )\d+')" >> $GITHUB_OUTPUT
+        echo "minor=$(echo "$version_info" | grep -oP '(?<=Minor: )\d+')" >> $GITHUB_OUTPUT
+        echo "patch=$(echo "$version_info" | grep -oP '(?<=Patch: )\d+')" >> $GITHUB_OUTPUT
+
     - name: Display GitVersion info
       run: |
         echo "Major: ${{ steps.gitversion.outputs.major }}"
         echo "Minor: ${{ steps.gitversion.outputs.minor }}"
         echo "Patch: ${{ steps.gitversion.outputs.patch }}"
-        echo "PreReleaseTag: ${{ steps.gitversion.outputs.prereleasetag }}"
-        echo "PreReleaseTagWithDash: ${{ steps.gitversion.outputs.prereleasetagwithdash }}"
-        echo "FullSemVer: ${{ steps.gitversion.outputs.fullsemver }}"
-        echo "InformationalVersion: ${{ steps.gitversion.outputs.informationalversion }}"
-        echo "AssemblySemVer: ${{ steps.gitversion.outputs.assemblysemver }}"
-
-    - name: Restore dependencies
-      run: dotnet restore useless-stuff
-
-    - name: Build
-      run: dotnet build useless-stuff --configuration Release --no-restore
-
-    - name: Test
-      run: dotnet test useless-stuff-tests --no-restore --verbosity normal
