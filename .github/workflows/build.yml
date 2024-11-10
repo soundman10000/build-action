@@ -27,30 +27,28 @@ jobs:
     - name: Test
       run: dotnet test useless-stuff-tests --no-restore --verbosity normal
 
-    - name: Install jq
-      run: sudo apt-get install -y jq
-    
-    - name: Setup GitVersion
-      if: github.ref == 'refs/heads/main' 
-      uses: gittools/actions/gitversion/setup@v0.9.15
-      with:
-        versionSpec: '5.x'
-
-    - name: Determine Version
+    - name: Install jq and Determine Version
+      if: github.ref == 'refs/heads/main'
       id: gitversion
       run: |
+        # Install jq
+        sudo apt-get update
+        sudo apt-get install -y jq
+        
+        dotnet tool install --global GitVersion.Tool --version 5.x
+
         output=$(dotnet gitversion 2>&1)
+        version_info=$(echo "$output" | jq '.')
+        version=$(echo "$version_info" | jq -r '.MajorMinorPatch')
+    
         echo "version_info<<EOF" >> $GITHUB_OUTPUT
-        echo "$output" | jq '.' >> $GITHUB_OUTPUT
+        echo "$version_info" >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
-
-    - name: Parse Version Info
-      id: parse_version
-      shell: bash
-      run: |
-        echo "version=$(echo '${{ steps.gitversion.outputs.version_info }}' | jq -r '.MajorMinorPatch')" >> $GITHUB_OUTPUT
-
+        echo "version=$version" >> $GITHUB_OUTPUT
+        shell: bash
+        
     - name: Create Tag
+      if: github.ref == 'refs/heads/main'
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
