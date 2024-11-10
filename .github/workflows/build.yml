@@ -29,8 +29,9 @@ jobs:
     - name: Determine Version
       id: gitversion
       run: |
+        output=$(dotnet gitversion 2>&1)
         echo "version_info<<EOF" >> $GITHUB_OUTPUT
-        dotnet gitversion
+        echo "$output" | jq '.' >> $GITHUB_OUTPUT
         echo "EOF" >> $GITHUB_OUTPUT
 
     - name: Parse Version Info
