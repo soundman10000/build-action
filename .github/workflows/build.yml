@@ -32,7 +32,7 @@ jobs:
     
     - name: Setup, Determine, and Parse Version
       if: github.ref == 'refs/heads/main'
-      id: gitversion
+      id: gitversion  # This ID should match what you reference later
       run: |
         # Setup GitVersion
         dotnet tool install --global GitVersion.Tool --version 5.* || { echo "Failed to install GitVersion"; exit 1; }
@@ -49,13 +49,13 @@ jobs:
         
         # Set Output
         echo "version=$version" >> $GITHUB_OUTPUT
-    shell: bash
-    
+      shell: bash
+
     - name: Create Tag
       run: |
         git config --global user.name "GitHub Actions"
         git config --global user.email "actions@github.com"
-        git tag -a "v${{ steps.parse_version.outputs.version }}" -m "Release version ${{ steps.parse_version.outputs.version }}"
-        git push origin "v${{ steps.parse_version.outputs.version }}"
+        git tag -a "v${{ steps.gitversion.outputs.version }}" -m "Release version ${{ steps.gitversion.outputs.version }}"
+        git push origin "v${{ steps.gitversion.outputs.version }}"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
