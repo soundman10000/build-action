@@ -34,9 +34,11 @@ jobs:
         echo "EOF" >> $GITHUB_OUTPUT
 
     - name: Parse Version Info
+      id: parse_version
       shell: bash
       run: |
-        echo "Version is ${{ fromJson(steps.gitversion.outputs).Major }}"
+        version_info=$(jq -r '.version.Major' <<< '${{ toJson(steps.gitversion.outputs) }}')
+        echo "version_major=$version_info" >> $GITHUB_OUTPUT
 
     - name: Display GitVersion info
       run: |
