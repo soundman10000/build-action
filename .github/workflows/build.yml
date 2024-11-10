@@ -63,14 +63,11 @@ jobs:
     - name: Add GitHub Package Source
       if: github.ref == 'refs/heads/main'
       run: |
-        nuget sources Add -Name "GitHub" -Source "https://nuget.pkg.github.com/OWNER/index.json" -UserName OWNER -Password ${{ secrets.GITHUB_TOKEN }} -StorePasswordInClearText
+        dotnet nuget add source --username OWNER --password ${{ secrets.NUGET_GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/OWNER/index.json"
 
     - name: Push to GitHub Packages
       if: github.ref == 'refs/heads/main'
-      run: |
-        nuget push "artifacts/*.nupkg" -Source "GitHub" -SkipDuplicate
-      env:
-        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: dotnet nuget push artifacts/*.nupkg --api-key ${{ secrets.GITHUB_TOKEN }} --source github
 
     - name: Create Tag
       if: github.ref == 'refs/heads/main'
