@@ -26,4 +26,10 @@ public class TestingUselessStuff
     {
         "a".Equals("b").Should().BeFalse();
     }
+
+    [Fact]
+    public void AnotherTest1()
+    {
+        "a".Equals("b").Should().BeFalse();
+    }
 }
