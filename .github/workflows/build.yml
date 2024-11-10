@@ -52,4 +52,4 @@ jobs:
 
     - name: Display GitVersion info
       run: |
-        echo "Major Version: ${{ steps.parse_version.outputs.version }}"
+        echo "Major Version: ${{ steps.parse_version.outputs.version }} can you believe it"
