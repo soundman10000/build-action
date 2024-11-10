@@ -54,7 +54,7 @@ jobs:
 
     - name: Pack Project
       if: github.ref == 'refs/heads/main'
-      run: dotnet pack --configuration Release --output artifacts -p:packageVersion=${{ steps.gitversion.outputs.version }}
+      run: dotnet pack useless-stuff\ --configuration Release --output artifacts -p:packageVersion=${{ steps.gitversion.outputs.version }}
 
     - name: Setup NuGet
       if: github.ref == 'refs/heads/main'
