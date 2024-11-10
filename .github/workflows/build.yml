@@ -38,7 +38,7 @@ jobs:
       id: parse_version
       shell: bash
       run: |
-        echo "version=$(echo '${{ steps.gitversion.outputs.version_info }}' | jq -r '.MajorMinorPatch') >> $GITHUB_OUTPUT
+        echo "version=$(echo '${{ steps.gitversion.outputs.version_info }}' | jq -r '.MajorMinorPatch')" >> $GITHUB_OUTPUT
 
     - name: Display GitVersion info
       run: |
