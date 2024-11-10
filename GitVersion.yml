@@ -1,0 +1,15 @@
+mode: Mainline
+
+branches:
+  main:
+    regex: ^master$|^main$
+    tag: ''
+    increment: Patch
+  develop:
+    regex: ^develop$
+    tag: ''
+    increment: Minor
+  release:
+    regex: ^releases?[/-]
+    tag: useBranchName
+    increment: None
