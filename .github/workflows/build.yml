@@ -25,6 +25,8 @@ jobs:
 
     - name: Setup GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.15  # Make sure to use the latest version
+      with:
+        versionSpec: '5.x'  # or specify a specific version like '5.1.0'
 
     - name: Determine Version
       id: gitversion
