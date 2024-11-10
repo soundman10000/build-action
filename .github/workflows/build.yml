@@ -22,7 +22,16 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '8.0.x'
+    
+    - name: Set Output
+      id: my_step
+      run: |
+        echo "my_output=some value" >> $GITHUB_OUTPUT
 
+    - name: Use Output
+      run: |
+        echo "The output was ${{ steps.my_step.outputs.my_output }}"
+    
     - name: Setup GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.15  # Make sure to use the latest version
       with:
