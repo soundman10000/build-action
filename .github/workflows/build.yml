@@ -41,13 +41,8 @@ jobs:
       id: gitversion
       run: |
         version_info=$(dotnet gitversion)
-        echo "$version_info" > version_info.txt
-        echo "major=$(echo "$version_info" | grep -oP '(?<=Major: )\d+')" >> $GITHUB_OUTPUT
-        echo "minor=$(echo "$version_info" | grep -oP '(?<=Minor: )\d+')" >> $GITHUB_OUTPUT
-        echo "patch=$(echo "$version_info" | grep -oP '(?<=Patch: )\d+')" >> $GITHUB_OUTPUT
+        echo version_info >> $GITHUB_OUTPUT
 
     - name: Display GitVersion info
       run: |
-        echo "Major: ${{ steps.gitversion.outputs.major }}"
-        echo "Minor: ${{ steps.gitversion.outputs.minor }}"
-        echo "Patch: ${{ steps.gitversion.outputs.patch }}"
+        echo "Value: ${{ steps.gitversion.outputs }}"
