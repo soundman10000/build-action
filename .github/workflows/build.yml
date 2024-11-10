@@ -52,6 +52,26 @@ jobs:
         echo "version=$version" >> $GITHUB_OUTPUT
       shell: bash
 
+    - name: Pack Project
+      if: github.ref == 'refs/heads/main'
+      run: dotnet pack --configuration Release --output artifacts
+
+    - name: Setup NuGet
+      if: github.ref == 'refs/heads/main'
+      uses: nuget/setup-nuget@v1
+
+    - name: Add GitHub Package Source
+      if: github.ref == 'refs/heads/main'
+      run: |
+        nuget sources Add -Name "GitHub" -Source "https://nuget.pkg.github.com/OWNER/index.json" -UserName OWNER -Password ${{ secrets.GITHUB_TOKEN }} -StorePasswordInClearText
+
+    - name: Push to GitHub Packages
+      if: github.ref == 'refs/heads/main'
+      run: |
+        nuget push "artifacts/*.nupkg" -Source "GitHub" -SkipDuplicate
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Create Tag
       if: github.ref == 'refs/heads/main'
       run: |
