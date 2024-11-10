@@ -36,8 +36,6 @@ jobs:
     - name: Parse Version Info
       shell: bash
       run: |
-        echo steps.gitversion.outputs.version_info
-        version_info=$(echo "${{ steps.gitversion.outputs.version_info }}" | jq '.')
         echo "Version is ${{ fromJson(steps.gitversion.outputs).Major }}"
 
     - name: Display GitVersion info
