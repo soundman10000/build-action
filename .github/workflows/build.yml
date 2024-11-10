@@ -31,7 +31,7 @@ jobs:
     - name: Determine Version
       id: gitversion
       run: |
-        output=$(dotnet gitversion | tee /dev/tty)
+        output=$(dotnet gitversion)
         echo "major=$(echo "$output" | grep -oP '(?<=Major: )\d+')" >> $GITHUB_OUTPUT
         echo "minor=$(echo "$output" | grep -oP '(?<=Minor: )\d+')" >> $GITHUB_OUTPUT
         echo "patch=$(echo "$output" | grep -oP '(?<=Patch: )\d+')" >> $GITHUB_OUTPUT
@@ -40,7 +40,7 @@ jobs:
         echo "fullsemver=$(echo "$output" | grep -oP '(?<=FullSemVer: )\S+')" >> $GITHUB_OUTPUT
         echo "informationalversion=$(echo "$output" | grep -oP '(?<=InformationalVersion: )\S+')" >> $GITHUB_OUTPUT
         echo "assemblysemver=$(echo "$output" | grep -oP '(?<=AssemblySemVer: )\S+')" >> $GITHUB_OUTPUT
-
+    
     - name: Display GitVersion info
       run: |
         echo "Major: ${{ steps.gitversion.outputs.major }}"
