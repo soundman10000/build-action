@@ -34,13 +34,25 @@ jobs:
 
     - name: Install SQL Server Command Line Tools
       run: |
-        sudo apt-get update && sudo apt-get install -y mssql-tools unixodbc-dev
+        sudo apt-get update
+        sudo apt-get install -y curl
+        curl https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+        curl https://packages.microsoft.com/config/ubuntu/20.04/prod.list | sudo tee /etc/apt/sources.list.d/mssql-release.list
+        sudo apt-get update
+        sudo ACCEPT_EULA=Y apt-get install -y msodbcsql17 mssql-tools
+        # Add SQL Server command line tools to the path
+        echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile
+        echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc
+        source ~/.bashrc
+      shell: bash
     
     - name: Initialize Database
       run: |
-        SQLCMD -S localhost -U sa -P YourStrong@Passw0rd -Q "CREATE DATABASE YourTestDB;"
+        sqlcmd -S localhost -U sa -P YourStrong@Passw0rd -Q "CREATE DATABASE YourTestDB;"
         # Add your schema creation scripts here or run migrations
-    
+      env:
+        PATH: /opt/mssql-tools/bin:$PATH
+        
     - name: Restore dependencies
       run: dotnet restore useless-stuff
 
