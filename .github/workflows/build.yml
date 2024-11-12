@@ -11,11 +11,35 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2017-latest
+        env:
+          ACCEPT_EULA: "Y"
+          SA_PASSWORD: "YourStrong@Passw0rd"
+        ports:
+          - 1433:1433
+        # Health check to wait for SQL Server to be ready
+        options: >-
+          --health-cmd="/opt/mssql-tools/bin/sqlcmd -U sa -P YourStrong@Passw0rd -Q 'SELECT 1' || exit 1"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
+
+    - name: Install SQL Server Command Line Tools
+      run: |
+        sudo apt-get update && sudo apt-get install -y mssql-tools unixodbc-dev
+    
+    - name: Initialize Database
+      run: |
+        SQLCMD -S localhost -U sa -P YourStrong@Passw0rd -Q "CREATE DATABASE YourTestDB;"
+        # Add your schema creation scripts here or run migrations
     
     - name: Restore dependencies
       run: dotnet restore useless-stuff
